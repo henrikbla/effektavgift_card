@@ -82,6 +82,9 @@ def main():
             by_day[date] = {"date": date, "hour": hour, "raw_kw": mean, "effective_kw": eff, "is_night": is_night}
 
     top3 = sorted(by_day.values(), key=lambda x: x["effective_kw"], reverse=True)[:3]
+    if not top3:
+        print("No valid data rows after filtering", file=sys.stderr)
+        sys.exit(1)
     avg  = sum(p["effective_kw"] for p in top3) / len(top3)
     cost = avg * PRICE_PER_KW
 
