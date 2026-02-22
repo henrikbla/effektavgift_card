@@ -1,0 +1,13 @@
+alias: "Effektavgift: Calculate hourly peaks"
+description: >-
+  Runs every hour at :05 to calculate the top 3 power peaks for the month and
+  store results in input_number/input_text helpers. Only full hours count toward
+  Ellevio's effektavgift.
+triggers:
+  - minutes: "5"
+    trigger: time_pattern
+  - event: start
+    trigger: homeassistant
+actions:
+  - action: shell_command.effektavgift_calc
+mode: single
