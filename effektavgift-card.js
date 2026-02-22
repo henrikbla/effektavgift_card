@@ -5,7 +5,7 @@
  *
  * INSTALLATION:
  *   1. Copy to /config/www/effektavgift-card.js
- *   2. Resource URL: /local/effektavgift-card.js?v=27   Type: JavaScript Module
+ *   2. Resource URL: /local/effektavgift-card.js?v=28   Type: JavaScript Module
  *   3. Card config:
  *        type: custom:effektavgift-card
  *        entity: sensor.slimmelezer_power_consumed
@@ -169,15 +169,20 @@ class EffektavgiftCard extends HTMLElement {
       </tr>`;
     }).join('');
 
-    const formulaStr = top3.length === 3
-      ? `(${top3.map(p => p.effKw.toFixed(2)).join(' + ')}) / 3 × ${pricePerKw.toFixed(2)} = ${cost.toFixed(0)} kr/month`
+    const formulaStr = top3.length > 0
+      ? `(${top3.map(p => p.effKw.toFixed(2)).join(' + ')}) / ${top3.length} × ${pricePerKw.toFixed(2)} = ${cost.toFixed(0)} kr/month`
+        + (top3.length < 3 ? ` &mdash; based on ${top3.length} peak${top3.length > 1 ? 's' : ''} so far` : '')
       : '';
 
     const green = '#22c55e', red = '#ef4444';
     const alertColor = wouldBeNewPeak ? red : green;
     const alertText  = wouldBeNewPeak
       ? `Warning: current draw may become a new monthly peak! Projected cost: <strong>${projectedCost.toFixed(0)} kr</strong>`
-      : `OK &mdash; current draw does not affect this month's top&nbsp;3`;
+      : top3.length === 0
+        ? `No peak data yet this month &mdash; waiting for first full hour`
+        : top3.length < 3
+          ? `${top3.length} of 3 peaks recorded so far &mdash; current draw does not affect ranking`
+          : `OK &mdash; current draw does not affect this month's top&nbsp;3`;
 
     // ---- Build 48h bar chart ----
     const chartH = 100;
