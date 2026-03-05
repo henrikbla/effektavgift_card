@@ -1,0 +1,8 @@
+alias: "Effektavgift: Backfill historical data"
+description: >-
+  One-shot automation to backfill peak history for all past months. Trigger
+  manually from the UI.
+triggers: []
+actions:
+  - action: shell_command.effektavgift_backfill
+mode: single
